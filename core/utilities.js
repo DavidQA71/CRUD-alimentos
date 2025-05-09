@@ -1,8 +1,6 @@
-const inputsForm = {
-    /* user: document.getElementById('username'),
-    pass: document.getElementById('password').value, */
-    loginBtn: document.getElementById('loginBtn')
-}
+
+
+
 
 /*Constants */
 const $mainTable = document.getElementById('tbodyMainTable');
@@ -44,7 +42,7 @@ const $createPopover = document.getElementById('createPopover');
 
 //Functions
 
-function spinnerModal() {
+export function spinnerModal() {
     $spinner.classList.add('show');
     setTimeout(() => {
         $spinner.classList.remove('show');
