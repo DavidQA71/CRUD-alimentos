@@ -21,7 +21,6 @@ export async function renderLogin() {
 			link.crossOrigin = 'anonymous';
 			document.head.appendChild(link);
 		}
-
 	}
 
 
@@ -30,6 +29,6 @@ export async function renderLogin() {
 	loginBtn.addEventListener('click', (event) => {
 		event.preventDefault();
 		userAuth();
-		/* spinnerModal(); */
+		spinnerModal();
 	});
 }
