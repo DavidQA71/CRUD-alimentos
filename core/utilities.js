@@ -1,7 +1,3 @@
-
-
-
-
 /*Constants */
 const $mainTable = document.getElementById('tbodyMainTable');
 const $spinner = document.getElementById('spinnerLoad');
@@ -10,35 +6,9 @@ let productsData = [];
 const $paginationContainer = document.getElementById('pagination-container');
 let productsDataTwo = [];
 const $catchUsername = document.getElementById('user');
-
-
-// Modals
-const deleteModal = {
-    deleteBtn: document.getElementById('deleteBtn'),
-    userIdField: document.getElementById('userId'),
-    descriptionProduct: document.getElementById('descriptionProduct')
-};
-
-const editModal = {
-    productName: document.getElementById('editProductName'),
-    StockProduct: document.getElementById('editStockProduct'),
-    PriceProduct: document.getElementById('editProductPrice'),
-    modifyBtn: document.getElementById('modifyProductBtn')
-};
-
-const createModal = {
-    newProductName: document.getElementById('createDescription'),
-    newStockProduct: document.getElementById('createStock'),
-    newPriceProduct: document.getElementById('createPrice'),
-    createBtn: document.getElementById('createProductModal')
-};
-
-
-/* Popovers */
-const $modifyPopover = document.getElementById('modifyPopover');
-const $deletePopover = document.getElementById('deletePopover');
-const $createPopover = document.getElementById('createPopover');
-
+export const BOOTSTRAP_STYLE_LINK = 'link[href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"]';
+export const BOOTSTRAP_STYLE_HREF = 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css';
+export const BOOTSTRAP_STYLE_INTEGRITY = 'sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH';
 
 //Functions
 

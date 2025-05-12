@@ -1,4 +1,4 @@
-import { renderLogin } from "./pages/services/login_service.js";
+import { renderLogin } from "./pages/login/login.js";
 const DEFAULT_ROUTE = '#/login';
 
 function isLoggedIn() {
