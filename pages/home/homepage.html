@@ -1,0 +1,136 @@
+
+<main class="container-fluid">
+    <header class="container-fluid d-flex justify-content-between p-4">
+        <h1>Bienvenido: <span class="h3" id="user"></span></h1>
+        <div>
+            <button type="button" class="btn btn-success" id="createUserBtn" data-bs-toggle="modal"
+                data-bs-target="#createProduct"> Crear Producto</button>
+            <button type="button" class="btn btn-danger">Salir</button>
+        </div>
+    </header>
+
+    <!-- Popovers -->
+    <div class="alert alert-primary hide" role="alert" id="modifyPopover">
+        Producto modificado exitosamente
+    </div>
+    <div class="alert alert-danger hide" role="alert" id="deletePopover">
+        Producto eliminado exitosamente
+    </div>
+    <div class="alert alert-success hide" role="alert" id="createPopover">
+        Producto creado exitosamente
+    </div>
+
+    <div class="container p-3 d-flex gap-3">
+        <select class="form-select w-25 " aria-label="Default select example">
+            <option selected>Tipo de producto</option>
+            <option value="1">One</option>
+            <option value="2">Two</option>
+            <option value="3">Three</option>
+        </select>
+        <div class="d-flex gap-3">
+            <input type="number" class="form-control" id="fromPrice" placeholder="Desde $">
+            <input type="number" class="form-control" id="toPrice" placeholder="Hasta $">
+        </div>
+        <button type="button" class="btn btn-primary" id="filterProduct">Buscar</button>
+    </div>
+
+    <div class="container p-3">
+        <table id="mainTable" class="container text-center table table-success table-striped">
+            <thead>
+                <th class="w-10">ID</th>
+                <th class="w-40">PRODUCTO</th>
+                <th class="w-15">STOCK</th>
+                <th class="w-25">PRECIO</th>
+                <th class="w-25">ACCIONES</th>
+            </thead>
+            <tbody id="tbodyMainTable"></tbody>
+        </table>
+
+        <div id="pagination-container" class="d-flex justify-content-center"></div>
+    </div>
+
+    <!-- Delete Modal -->
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Eliminar Producto</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    ¿Desea eliminar el producto "<span id="descriptionProduct"></span>"?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-danger" id="deleteBtn"
+                        data-bs-dismiss="modal">Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modify Modal -->
+    <div class="modal fade" id="confirmModifyModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Modificar producto</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form class="modal-body">
+                    <div class="mb-3">
+                        <label for="editProductName" class="form-label">Nombre de producto</label>
+                        <input type="text" class="form-control" id="editProductName">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editStockProduct" class="form-label">Stock</label>
+                        <input type="number" class="form-control" id="editStockProduct">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editProductPrice" class="form-label">Precio</label>
+                        <input type="number" class="form-control" id="editProductPrice">
+                    </div>
+                </form>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-primary" id="modifyProductBtn"
+                        data-bs-dismiss="modal">Modificar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create product -->
+    <div class="modal fade" id="createProduct" tabindex="-1" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" >
+        <div class="modal-content" >
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Ingresar nuevo producto</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form class="modal-body" id="containerCreateUser">
+                <div class="mb-3">
+                    <label for="createDescription" class="form-label">Nombre del producto</label>
+                    <input type="text" class="form-control" id="createDescription">
+                </div>
+                <div class="mb-3">
+                    <label for="createStock" class="form-label">Stock</label>
+                    <input type="number" class="form-control" id="createStock">
+                </div>
+                <div class="mb-3">
+                    <label for="createPrice" class="form-label">Precio</label>
+                    <input type="number" class="form-control" id="createPrice">
+                </div>
+            </form>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="submit" class="btn btn-primary" id="createProductModal" data-bs-dismiss="modal">Crear</button>
+            </div>
+        </div>
+    </div>
+</div>
+</main>
