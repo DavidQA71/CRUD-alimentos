@@ -12,14 +12,16 @@ export function hideSpinner(locator) {
 }
 
 export function showPopoverAlert(popovertype) {
-popovertype.classList.remove('hide');
-setTimeout(() => {
-    popovertype.classList.add('hide');
-}, 3000);
+    popovertype.classList.remove('hide');
+    setTimeout(() => {
+        popovertype.classList.add('hide');
+    }, 3000);
 }
 
-
-/* const {$spinner} = getSelectors();
-
-showSpinner($spinner);
-hideSpinner($spinner); */
+export function formatCurrency(value) {
+    return new Intl.NumberFormat('es-AR', {
+        style: 'currency',
+        currency: 'ARS',
+        minimumFractionDigits: 2,
+    }).format(value);
+}

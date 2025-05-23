@@ -23,7 +23,8 @@ import {
 import {
     showSpinner,
     hideSpinner,
-    showPopoverAlert
+    showPopoverAlert,
+    formatCurrency
 } from "../../core/utilities.js";
 
 
@@ -74,20 +75,18 @@ export async function renderHome() {
 
 }
 
-        
+
 const renderProductsList = async () => {
-    const {$spinner} = getSelectors();
+    const { $spinner } = getSelectors();
     try {
         showSpinner($spinner);
         const data = await getProducts();
 
         productsData = await data;
-
+        console.log(data)
         initialData(productsData);
         createPagination(productsData);
         showRecordsPerPage();
-
-
     } catch (error) {
         console.log(error)
     }
@@ -111,15 +110,6 @@ function initialData(productsData) {
         $mainTable.appendChild($row);
     });
 
-}
-
-//mandar al utilities
-function formatCurrency(value) {
-    return new Intl.NumberFormat('es-AR', {
-        style: 'currency',
-        currency: 'ARS',
-        minimumFractionDigits: 2,
-    }).format(value);
 }
 
 function createProductRow(product) {
@@ -162,7 +152,7 @@ function generateButton(btnName, classBtn, actionBtn, modalConfigs = null) {
 }
 
 async function deleteProduct() {
-    const {$spinner} = getSelectors();
+    const { $spinner } = getSelectors();
     try {
         showSpinner($spinner);
         const response = await DeleteProduct();
@@ -182,7 +172,6 @@ function setupModalEvents() {
     const deleteModal = getDeleteModalLocators();
     deleteModal.deleteBtn.addEventListener('click', () => {
         deleteProduct()
-        /* spinnerModal() */
     });
 }
 
@@ -216,22 +205,17 @@ async function updateProductModify(product, editModal) {
     product.stock = editModal.stockProduct.value;
     product.price = editModal.priceProduct.value;
 
-    const {$modifyPopover} = getSelectors();
+    const { $modifyPopover } = getSelectors();
     try {
         const response = await UpdateProductModify(product);
-        
+
 
         if (!response.ok) throw new Error('No se pudo actualizar el producto');
-        showPopoverAlert($modifyPopover);
-        /* spinnerModal(); */
         showRecordsPerPage();
         createPagination();
-        /* popoversAlerts($modifyPopover); */
 
     } catch (error) {
         console.error('Error actualizando el producto:', error);
-    } finally {
-        hidePopoverAlert($modifyPopover)
     }
 }
 
@@ -299,23 +283,25 @@ const EventCreateProduct = () => {
 
 
 async function createProduct(createModal) {
-    const newProduct = {
-        description: createModal.newProductName.value,
-        stock: parseInt(createModal.newStockProduct.value),
-        price: parseInt(createModal.newPriceProduct.value),
-    }
-
     try {
-        const response = await CreateProduct(newProduct);
+        const newProduct = {
+            description: createModal.newProductName.value,
+            stock: parseInt(createModal.newStockProduct.value),
+            price: parseInt(createModal.newPriceProduct.value),
+        }
 
-        if (!response.ok) throw new Error('No se pudo crear el producto');
+        const exists = await validateNewProduct(newProduct);
 
-        /* spinnerModal(); */
-        showRecordsPerPage();
-        createPagination();
-        /* popoversAlerts($createPopover); */
-        refreshModalInputs(createModal);
+        if (!exists) {
+            await CreateProduct(newProduct);
 
+            showRecordsPerPage();
+            createPagination();
+            refreshModalInputs(createModal);
+
+        } else {
+            alert('No se pudo crear el producto');
+        }
     } catch (error) {
         console.error('Error creando el producto:', error);
     }
@@ -329,19 +315,24 @@ function refreshModalInputs(createModal) {
 
 }
 
-function validateNewProduct(newProduct) {
+async function validateNewProduct(newProduct) {
 
-
-    // ACA TAL VEZ DEBERIA USAR UN FOR PARA RECORRER LAS PAGES E IR
-    //RECORRIENDO LOS DATOS Y VALIDAR SI YA EXISTE
-    for (let product of data) {
-        if (product.description === newProduct.description) {
-            alert(`El producto ya existe, por favor intenta otro`);
-            return false;
+    try {
+        let page = 1
+        let newArrayProducts = [];
+        for (let index = 0; index < productsData.pages; index++) {
+            const data = await getProducts(page);
+            let arrayProducts = data.values;
+            newArrayProducts = [...newArrayProducts, ...arrayProducts]
+            page++
         }
+
+        return newArrayProducts.some(product => product.description === newProduct.description);
+
+    } catch (error) {
+        console.log(error);
     }
 
-    return true;
 }
 
 
@@ -356,16 +347,16 @@ async function renderCss() {
     }
 
     if (!document.querySelector('link[href="/components/spinner/spinner.css"]')) {
-		const link = document.createElement('link');
-		link.rel = 'stylesheet';
-		link.href = '/components/spinner/spinner.css';
-		document.head.appendChild(link);
-	}
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = '/components/spinner/spinner.css';
+        document.head.appendChild(link);
+    }
 }
 
 
 async function renderBootstrap() {
-        if (!document.querySelector(BOOTSTRAP_STYLE_LINK)) {
+    if (!document.querySelector(BOOTSTRAP_STYLE_LINK)) {
         const link = document.createElement('link');
         link.rel = 'stylesheet';
         link.href = BOOTSTRAP_STYLE_HREF;
