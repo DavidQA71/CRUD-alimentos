@@ -11,10 +11,7 @@ body {
 	font-family: sans-serif;
 }
 
-.show {
-    display: flex;
-}
 
-.hide {
+.hide-popover {
     display: none;
-}
+} 

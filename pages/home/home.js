@@ -54,14 +54,14 @@ export async function renderHome() {
         const spinner = await fetch('/components/spinner/spinner.html').then((render) =>
             render.text()
         );
+        await renderCss();
+        await renderBootstrap();
+
         const app = document.getElementById('app');
         app.innerHTML = '';
         app.innerHTML = spinner;
         app.innerHTML += html;
 
-
-        await renderCss();
-        await renderBootstrap();
 
         renderProductsList();
         getUser();
@@ -77,22 +77,18 @@ export async function renderHome() {
 
 
 const renderProductsList = async () => {
-    const { $spinner } = getSelectors();
     try {
-        showSpinner($spinner);
         const data = await getProducts();
 
         productsData = await data;
-        console.log(data)
+
         initialData(productsData);
         createPagination(productsData);
-        showRecordsPerPage();
+        showRecordsPerPage(1);
     } catch (error) {
         console.log(error)
     }
-    finally {
-        hideSpinner($spinner);
-    }
+
 }
 
 async function getUser() {
@@ -151,28 +147,29 @@ function generateButton(btnName, classBtn, actionBtn, modalConfigs = null) {
     return $button;
 }
 
+function setupModalEvents() {
+    const deleteModal = getDeleteModalLocators();
+    deleteModal.deleteBtn.addEventListener('click', () => {
+        deleteProduct()
+    });
+}
+
 async function deleteProduct() {
-    const { $spinner } = getSelectors();
+    const { $spinner, $deletePopover } = getSelectors();
     try {
         showSpinner($spinner);
         const response = await DeleteProduct();
 
         if (!response.ok) throw new Error('No se pudo eliminar el producto');
 
-        showRecordsPerPage();
+        await showRecordsPerPage(1);
         createPagination();
     } catch (error) {
         console.error('Error eliminando el producto:', error);
     } finally {
         hideSpinner($spinner);
+        showPopoverAlert($deletePopover);
     }
-}
-
-function setupModalEvents() {
-    const deleteModal = getDeleteModalLocators();
-    deleteModal.deleteBtn.addEventListener('click', () => {
-        deleteProduct()
-    });
 }
 
 function confirmDeleteProduct(product) {
@@ -205,8 +202,9 @@ async function updateProductModify(product, editModal) {
     product.stock = editModal.stockProduct.value;
     product.price = editModal.priceProduct.value;
 
-    const { $modifyPopover } = getSelectors();
+    const { $spinner, $modifyPopover } = getSelectors();
     try {
+        showSpinner($spinner);
         const response = await UpdateProductModify(product);
 
 
@@ -216,6 +214,9 @@ async function updateProductModify(product, editModal) {
 
     } catch (error) {
         console.error('Error actualizando el producto:', error);
+    } finally {
+        hideSpinner($spinner);
+        showPopoverAlert($modifyPopover);
     }
 }
 
@@ -244,21 +245,28 @@ function setupPaginationEvents() {
     for (let index = 0; index < links.length; index++) {
         const currentPage = links[index].getAttribute('data-page-id');
         links[index].addEventListener('click', (e) => {
-            e.preventDefault()
-            showRecordsPerPage(currentPage)
+            e.preventDefault();
+
+            showRecordsPerPage(currentPage);
         });
     }
 };
 
 
 async function showRecordsPerPage(currentPage) {
+    const { $spinner } = getSelectors();
     try {
+        showSpinner($spinner);
         const data = await getProducts(currentPage || 1);
+        productsData = data;
 
         initialData(data);
         activePage(currentPage);
-    } catch (error) {
 
+    } catch (error) {
+        console.log(error, 'desde showrecord');
+    } finally {
+        hideSpinner($spinner);
     }
 }
 
@@ -283,27 +291,25 @@ const EventCreateProduct = () => {
 
 
 async function createProduct(createModal) {
+    const { $spinner, $createPopover } = getSelectors();
     try {
         const newProduct = {
             description: createModal.newProductName.value,
             stock: parseInt(createModal.newStockProduct.value),
             price: parseInt(createModal.newPriceProduct.value),
         }
+        showSpinner($spinner);
+        await CreateProduct(newProduct);
 
-        const exists = await validateNewProduct(newProduct);
+        await showRecordsPerPage();
+        createPagination();
+        refreshModalInputs(createModal);
 
-        if (!exists) {
-            await CreateProduct(newProduct);
-
-            showRecordsPerPage();
-            createPagination();
-            refreshModalInputs(createModal);
-
-        } else {
-            alert('No se pudo crear el producto');
-        }
     } catch (error) {
         console.error('Error creando el producto:', error);
+    } finally {
+        hideSpinner($spinner);
+        showPopoverAlert($createPopover);
     }
 }
 
@@ -314,28 +320,6 @@ function refreshModalInputs(createModal) {
     createModal.newPriceProduct.value = null;
 
 }
-
-async function validateNewProduct(newProduct) {
-
-    try {
-        let page = 1
-        let newArrayProducts = [];
-        for (let index = 0; index < productsData.pages; index++) {
-            const data = await getProducts(page);
-            let arrayProducts = data.values;
-            newArrayProducts = [...newArrayProducts, ...arrayProducts]
-            page++
-        }
-
-        return newArrayProducts.some(product => product.description === newProduct.description);
-
-    } catch (error) {
-        console.log(error);
-    }
-
-}
-
-
 
 
 async function renderCss() {
@@ -351,6 +335,11 @@ async function renderCss() {
         link.rel = 'stylesheet';
         link.href = '/components/spinner/spinner.css';
         document.head.appendChild(link);
+
+        await new Promise((resolve, reject) => {
+            link.onload = resolve;
+            link.onerror = reject;
+        });
     }
 }
 

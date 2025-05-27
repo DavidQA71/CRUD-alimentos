@@ -34,6 +34,11 @@ export async function renderLogin() {
 		link.rel = 'stylesheet';
 		link.href = '/components/spinner/spinner.css';
 		document.head.appendChild(link);
+
+		await new Promise((resolve, reject) => {
+            link.onload = resolve;
+            link.onerror = reject;
+        });
 	}
 
 	if (!document.querySelector(BOOTSTRAP_STYLE_LINK)) {

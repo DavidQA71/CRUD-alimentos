@@ -1,20 +1,20 @@
 
 export function showSpinner(locator) {
-    locator.classList.remove('hide');
-    locator.classList.add('show');
+    locator.classList.remove('hide-spinner');
+    locator.classList.add('show-spinner');
     console.log('ejecutando showspinner')
 }
 
 export function hideSpinner(locator) {
-    locator.classList.remove('show');
-    locator.classList.add('hide');
+    locator.classList.remove('show-spinner');
+    locator.classList.add('hide-spinner');
     console.log('ejecutando hide')
 }
 
 export function showPopoverAlert(popovertype) {
-    popovertype.classList.remove('hide');
+    popovertype.classList.remove('hide-popover');
     setTimeout(() => {
-        popovertype.classList.add('hide');
+        popovertype.classList.add('hide-popover');
     }, 3000);
 }
 
