@@ -10,3 +10,8 @@ body {
 	width: 100%;
 	font-family: sans-serif;
 }
+
+
+.hide-popover {
+    display: none;
+} 

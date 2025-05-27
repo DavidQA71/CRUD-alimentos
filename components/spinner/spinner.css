@@ -1,0 +1,19 @@
+.loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+}
+
+.show-spinner {
+    display: flex;
+	background-color: rgba(0, 0, 0, 0.5);
+	width: 100%;
+	height: 100vh;
+	align-items: center;
+	justify-content: center;
+}
+
+.hide-spinner {
+    display: none;
+} 
